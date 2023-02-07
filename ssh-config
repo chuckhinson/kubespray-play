@@ -1,0 +1,3 @@
+Host 10.2.2.*
+   User ubuntu
+   ProxyJump ubuntu@52.15.42.135

@@ -1,0 +1,12 @@
+- cp -R ./kubespray/inventory/sample ./kubespray/inventory/mycluster
+- edit terraform.tfvars
+  - set remote ip and instance counts
+- run terraform apply
+- update ssh-config with bastion ip
+- update inventory.ini with elb dns name
+- ensure ~/.ssh/k8splay_rsa is owned by root
+- run ./apb.sh
+- in container, install jmespath `apt update && apt install python3-jmespath`
+- ssh to proxy to accept host key
+- in container, run `ansible-playbook -b -i /inventory/inventory.ini cluster.yml`
+- kubectl admin.config can be found in inventory/mycluster/artifacts
