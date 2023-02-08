@@ -1,12 +1,11 @@
-- git clone git clone https://github.com/kubernetes-sigs/kubespray.git
-- `(cd kubespray; git checkout v2.21.0)`
-- `cp -rfp ./kubespray/inventory/sample ./kubespray/inventory/mycluster`
 - `cp ./terraform/terraform.tfvars.tmpl ./terraform/terraform.tfvars`
-- edit terraform/terraform.tfvars
+- `vi terraform/terraform.tfvars`   #update values in terraform.tfvars
 - `terraform -chdir=./terraform init`
 - `terraform -chdir=./terraform apply`
-- update ssh-config with bastion ip
-- update ./kubestpry/inventory/mycluster/inventory.ini with elb dns name
+- `git clone https://github.com/kubernetes-sigs/kubespray.git`
+- `(cd kubespray; git checkout v2.21.0)`
+- `mkdir -p tmp; cp -rfp ./kubespray/inventory/sample/ ./tmp/inventory`
+- update ./tmp/inventory/inventory.ini with elb dns name and node names
 - update ./ssh-config with IP address of bastion
 - `chmod og-w ./ssh-config`
 - ensure ~/.ssh/k8splay_rsa and ./ssh-config are owned by root
@@ -15,9 +14,6 @@
 - ssh to proxy to accept host key
 - in container, run `ansible-playbook -b -i /inventory/inventory.ini cluster.yml`
 - exit container
-- mkdir ./tmp
-- sudo cp ./kubespray/inventory/mycluster/artifacts/admin.conf ./tmp/admin.conf
-- sudo chown $(id -u):$(id -g) ./tmp/admin.conf
 - export KUBECONFIG=$(pwd)/tmp/admin.conf
-- edit ./tmp/admin.conf and replace 127.0.0.1 in cluster.server with lb dns name
-- kubectl get nodes
+- `vi ./tmp/admin.conf` and replace 10.2.2.10 in cluster.server with lb dns name
+- `kubectl get nodes; kubectl get pods -A`
