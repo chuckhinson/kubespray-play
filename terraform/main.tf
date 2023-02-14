@@ -19,7 +19,7 @@ terraform {
 
 provider "aws" {
   profile = var.aws_profile_name
-  region = "us-east-2"
+  region = var.aws_region
   default_tags {
     tags = {
       Environment = var.project_name
@@ -35,6 +35,13 @@ variable "project_name" {
 variable "aws_profile_name" {
   nullable = false
   description = "That name of the aws profile to be use when access AWS APIs"
+}
+
+variable "aws_region" {
+  # per https://github.com/hashicorp/terraform-provider-aws/issues/7750 the aws provider is not
+  # using the region defined in aws profile, so it will need to be specified
+  nullable = false
+  description = "The region to operate in"
 }
 
 variable "ec2_keypair_name" {
@@ -68,9 +75,37 @@ variable "worker_instance_count" {
   description = "The number of worker nodes"  
 }
 
+variable "jumpbox_ami_owner_id" {
+  # amazon commercial = 099720109477
+  # amazon gov cloud = 513442679011
+  default = null
+  nullable = true
+  type = string
+  description = <<EOT
+  Owner id to use when searching for ami to be used as jumpbox base image.  Normally
+  prefer images owned by amazon vs aws-marketplace. If null, only images owned by
+  the current account will be considered
+  EOT
+}
+
+variable "node_ami_owner_id" {
+  # amazon commercial = 099720109477
+  # amazon gov cloud = 513442679011
+  default = null
+  nullable = true
+  type = string
+  description = <<EOT
+  Owner id to use when searching for ami to be used as node base image.  Normally
+  prefer images owned by amazon vs aws-marketplace. If null, only images owned by
+  the current account will be considered
+  EOT
+}
+
 locals {
   public_subnet_cidr_block = cidrsubnet(var.node_vpc_cidr_block,8,1)
   private_subnet_cidr_block = cidrsubnet(var.node_vpc_cidr_block,8,2)
+  node_ami_owner_id = var.node_ami_owner_id == null ? data.aws_caller_identity.current.account_id : var.node_ami_owner_id
+  jumpbox_ami_owner_id = var.jumpbox_ami_owner_id == null ? data.aws_caller_identity.current.account_id : var.jumpbox_ami_owner_id
 }
 
 data "aws_caller_identity" "current" {}
@@ -98,7 +133,7 @@ data "aws_ami" "ubuntu_jammy" {
     values = ["x86_64"]
   }
 
-  owners = ["099720109477"]  # amazon
+  owners = [local.node_ami_owner_id]
 }
 
 data "aws_ami" "ubuntu_docker" {
@@ -109,7 +144,7 @@ data "aws_ami" "ubuntu_docker" {
     values = ["docker-ubuntu-22.04-*"]
   }
 
-  owners = [data.aws_caller_identity.current.account_id]
+  owners = [local.jumpbox_ami_owner_id]
 
 }
 

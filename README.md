@@ -4,10 +4,11 @@
 - `terraform -chdir=./terraform apply`
 - `git clone https://github.com/kubernetes-sigs/kubespray.git`
 - `(cd kubespray; git checkout v2.21.0)`
-- `mkdir -p tmp; cp -rfp ./kubespray/inventory/sample/ ./tmp/inventory`
+- `mkdir -p tmp/inventory; cp -rfp ./kubespray/inventory/sample/* ./tmp/inventory`
+- Review apb.sh and ensure SSH_KEY_FILE has the right value and that the file is owned by root
 - run ./apb.sh
 - in container, install jmespath `apt update && apt install python3-jmespath`
-- ssh to proxy to accept host key
+- ssh to bastion to accept host key
 - in container, run `ansible-playbook -b -i /inventory/inventory.ini cluster.yml`
 - exit container
 - export KUBECONFIG=$(pwd)/tmp/admin.conf
