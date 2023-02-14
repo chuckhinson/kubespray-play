@@ -3,22 +3,30 @@
 set -euo pipefail
 
 declare INVENTORY_DIR="$(pwd)/tmp/inventory"
-declare INVENTORY_FILE="$(pwd)/inventory.ini"
+declare INVENTORY_FILE="${INVENTORY_DIR}/inventory.ini"
+declare INVENTORY_FILE_TEMPLATE="$(pwd)/inventory.ini.tmpl"
 declare KUBESPRAY_DIR="$(pwd)/kubespray"
 declare ANSIBLE_CFG="${KUBESPRAY_DIR}/ansible.cfg"
 declare SSH_CONFIG_FILE="$(pwd)/ssh-config"
 declare SSH_KEY_FILE="${HOME}/.ssh/k8schuck_rsa"
 
-declare ELB_NAME
 declare BASTION_IP
+declare ALL_NODES
+declare CONTROLLER_NODES
+declare WORKER_NODES
+declare ELB_NAME
 
 function gatherClusterInfoFromTerraform () {
   ELB_NAME=$(terraform -chdir=./terraform output -json | jq -r '.elb_dns_name.value')
   BASTION_IP=$(terraform -chdir=./terraform output -json | jq -r '.jumpbox_public_ip.value')
+  ALL_NODES=$(terraform -chdir=./terraform output -json | jq -r '.all_nodes.value')
+  CONTROLLER_NODES=$(terraform -chdir=./terraform output -json | jq -r '.controller_nodes.value')
+  WORKER_NODES=$(terraform -chdir=./terraform output -json | jq -r '.worker_nodes.value')
 }
 
 function prepareAnsibleInventoryFile () {
-  sed -i "/^apiserver_loadbalancer_domain_name=/c\apiserver_loadbalancer_domain_name=\"$ELB_NAME\"" "${INVENTORY_FILE}"
+  ( export ALL_NODES CONTROLLER_NODES WORKER_NODES ELB_NAME; \
+    cat ${INVENTORY_FILE_TEMPLATE} | envsubst > ${INVENTORY_FILE} )
 }
 
 function setupBastionSshConfig () {
@@ -35,7 +43,6 @@ function runAnsibleContainer () {
 
   docker run --rm -it \
     --mount type=bind,source="${INVENTORY_DIR}",dst=/inventory \
-    --mount type=bind,source="${INVENTORY_FILE}",dst=/inventory/inventory.ini \
     --mount type=bind,source="${ANSIBLE_CFG}",dst=/kubespray/ansible.cfg \
     --mount type=bind,source="${SSH_KEY_FILE}",dst=/root/.ssh/id_rsa \
     --mount type=bind,source="${SSH_CONFIG_FILE}",dst=/root/.ssh/config \
