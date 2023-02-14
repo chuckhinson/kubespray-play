@@ -8,10 +8,10 @@ output "jumpbox_public_ip" {
 
 output "all_nodes" {
   value = <<EOT
-%{ for controller in module.cluster.controllers ~}
+%{ for controller in module.cluster.controller_nodes ~}
 ${controller.private_dns}  ansible_host=${controller.private_ip}
 %{ endfor ~}
-%{ for worker in module.cluster.workers ~}
+%{ for worker in module.cluster.worker_nodes ~}
 ${worker.private_dns}  ansible_host=${worker.private_ip}
 %{ endfor ~}
 EOT
@@ -19,7 +19,7 @@ EOT
 
 output "controller_nodes" {
   value = <<EOT
-%{ for controller in module.cluster.controllers ~}
+%{ for controller in module.cluster.controller_nodes ~}
 ${controller.private_dns}
 %{ endfor ~}
 EOT
@@ -27,7 +27,7 @@ EOT
 
 output "worker_nodes" {
   value = <<EOT
-%{ for worker in module.cluster.workers ~}
+%{ for worker in module.cluster.worker_nodes ~}
 ${worker.private_dns}
 %{ endfor ~}
 EOT
