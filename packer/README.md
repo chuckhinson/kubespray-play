@@ -3,11 +3,11 @@ Mostly just to give us an ubuntu image with docker installed on it.
 ## Quick Start
 
 - Review input variables and determine whether defaults need to be change
-  - if so, `cp docker-ubuntu.pkvars.hcl.tmpl docker-ubuntu.pkvars.hcl`
-  - edit docker.pkvars.hcl and provide appropriate values
+  - if so, `cp docker-ubuntu.auto.pkvars.hcl.tmpl docker-ubuntu.auto.pkvars.hcl`
+  - edit docker.auto.pkvars.hcl and provide appropriate values
 - `packer init .` 
-- `packer validate docker-ubuntu.pkr.hcl`
-- `packer build docker-ubuntu.pkr.hcl`
+- `packer validate .`
+- `packer build .`
 
 ## Configuration information
 
