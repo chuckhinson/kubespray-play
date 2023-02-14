@@ -11,10 +11,6 @@ variable aws_profile {
   description = "The name of the AWS profile to use"
   # default = null
 }
-variable aws_region {
-  description = "The region to work in"
-  # default = null
-}
 variable source_ami_owner_id {
   default = "513442679011" # GovCloud
   description = "Owner id for ami to be used as the base image.  Normally prefer images owned by amazon vs aws-marketplace"
@@ -33,7 +29,6 @@ source "amazon-ebs" "ubuntu" {
   ami_description = "${var.target_ami_base_name} with docker installed"
   instance_type   = "t3.small"
   profile         = var.aws_profile
-  region          = var.aws_region
   source_ami_filter {
     filters = {
       name                = var.source_ami_name_filter
