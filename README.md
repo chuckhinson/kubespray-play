@@ -28,3 +28,10 @@
   - `ssh-keyscan ${BASTION_IP} >> ~/.ssh/known_hosts`
   - `ansible-playbook -b -i /inventory/inventory.ini cluster.yml`
   - `exit`
+
+## Login to dashboard
+  - `kubectl apply -f dashboard-user.yaml`
+  - `kubectl -n kubernetes-dashboard create token admin-user`
+  - `sudo kubectl port-forward service/kubernetes-dashboard -n kubernetes-dashboard --kubeconfig=/home/chinson/projects/ks1/tmp/admin.conf 443:443`
+  - goto https://localhost/ and login
+    - select Token and paste in token from above
