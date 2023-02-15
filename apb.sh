@@ -37,11 +37,12 @@ function setupBastionSshConfig () {
 
 function runAnsibleContainer () {
   echo "Once connected to the container, run the following commands"
-  echo "ssh 10.2.2.10   #Ctl-C once you've accepted the host key"
+  echo "ssh-keyscan ${BASTION_IP} >> ~/.ssh/known_hosts"
   echo "apt update && apt install python3-jmespath"
   echo "ansible-playbook -b -i /inventory/inventory.ini cluster.yml"
 
   docker run --rm -it \
+    -e BASTION_IP=${BASTION_IP} \
     --mount type=bind,source="${INVENTORY_DIR}",dst=/inventory \
     --mount type=bind,source="${ANSIBLE_CFG}",dst=/kubespray/ansible.cfg \
     --mount type=bind,source="${SSH_KEY_FILE}",dst=/root/.ssh/id_rsa \
