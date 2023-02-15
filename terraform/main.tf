@@ -210,31 +210,3 @@ resource "aws_lb_listener" "cluster-api" {
     target_group_arn = aws_lb_target_group.cluster-api.arn
   }
 }
-
-# Create target goupr and listener for rancher's registration server
-resource "aws_lb_target_group" "rancher-server" {
-  name        = "${var.project_name}-rancher-server"
-  port        = 9345
-  protocol    = "TCP"
-  target_type = "ip"
-  vpc_id      = module.vpc.vpc_id
-}
-
-resource "aws_lb_target_group_attachment" "rancher-server" {
-  count = length(module.cluster.controller_nodes)
-
-  target_group_arn = aws_lb_target_group.rancher-server.arn
-  target_id        = module.cluster.controller_nodes[count.index].private_ip
-  port             = 9345
-}
-
-resource "aws_lb_listener" "rancher-server" {
-  load_balancer_arn = aws_lb.cluster-api.arn
-  port              = "9345"
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.rancher-server.arn
-  }
-}
