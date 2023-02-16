@@ -29,9 +29,14 @@
   - `ansible-playbook -b -i /inventory/inventory.ini --extra-vars "@/inventory/extra_vars.yml" cluster.yml`
   - `exit`
 
-## Login to dashboard
-  - `kubectl apply -f dashboard-user.yaml`
-  - `kubectl -n kubernetes-dashboard create token admin-user`
-  - `sudo kubectl port-forward service/kubernetes-dashboard -n kubernetes-dashboard --kubeconfig=/home/chinson/projects/ks1/tmp/admin.conf 443:443`
-  - goto https://localhost/ and login
-    - select Token and paste in token from above
+## Access dashboard
+  - Setup dashboard ingress
+    - ELB_IP = ip address for your elb  (nslokup $ELB_NAME)
+    - DASHBOARD_HOST_FQDN = the host name you want to use to access the dashboard
+    - edit your etc/hosts file and setup an entry for $ELB_IP and $DASHBOARD_HOST_FQDN
+    - edit dashboard-ingress.yml and replace $DASHBOARD_HOST_FQDN with correct value
+    - `kubectl apply -f dashboard-ingress.yml`
+  - Setup a user that can log in to the dashboard
+    - `kubectl apply -f dashboard-user.yaml`
+    - `kubectl -n kubernetes-dashboard create token admin-user`
+  - goto https://$DASHBOARD_HOST_FQDN/ and login using token created above
