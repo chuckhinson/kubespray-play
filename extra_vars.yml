@@ -1,1 +1,5 @@
+ansible_user : "ubuntu"
+kubeconfig_localhost : True
+dashboard_enabled : True
+dashboard_namespace : "kubernetes-dashboard"
 ingress_nginx_enabled : True
