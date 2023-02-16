@@ -161,6 +161,10 @@ module "vpc" {
 
 }
 
+module "iam" {
+  source = "./modules/iam"
+}
+
 module "cluster" {
   source = "./modules/cluster"
 
@@ -173,9 +177,9 @@ module "cluster" {
   cluster_cidr_block = var.cluster_cidr_block
   controller_instance_count = var.controller_instance_count
   worker_instance_count = var.worker_instance_count
+  ebs_instance_profile_name = module.iam.ebs_instance_profile_name
 
 }
-
 
 resource "aws_lb" "cluster-api" {
   name               = "${var.project_name}-cluster-api"
