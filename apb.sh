@@ -27,6 +27,7 @@ function gatherClusterInfoFromTerraform () {
 function prepareAnsibleInventoryFile () {
   ( export ALL_NODES CONTROLLER_NODES WORKER_NODES ELB_NAME; \
     cat ${INVENTORY_FILE_TEMPLATE} | envsubst > ${INVENTORY_FILE} )
+  cp extra_vars.yml ${INVENTORY_DIR}/
 }
 
 function setupBastionSshConfig () {

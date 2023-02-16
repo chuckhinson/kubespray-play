@@ -26,7 +26,7 @@
 - In the container:
   - `apt update && apt install python3-jmespath`
   - `ssh-keyscan ${BASTION_IP} >> ~/.ssh/known_hosts`
-  - `ansible-playbook -b -i /inventory/inventory.ini cluster.yml`
+  - `ansible-playbook -b -i /inventory/inventory.ini --extra-vars "@/inventory/extra_vars.yml" cluster.yml`
   - `exit`
 
 ## Login to dashboard
