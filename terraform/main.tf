@@ -163,6 +163,8 @@ module "vpc" {
 
 module "iam" {
   source = "./modules/iam"
+
+  resource_name = var.project_name
 }
 
 module "cluster" {

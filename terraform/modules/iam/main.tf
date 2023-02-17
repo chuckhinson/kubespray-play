@@ -19,7 +19,7 @@ locals {
 
 
 resource "aws_iam_role" "ebs_role" {
-  name = "ebs_role"
+  name = "${var.resource_name}-ebs_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -35,7 +35,7 @@ EOF
 }
 
 resource "aws_iam_policy" "ebs_access_policy" {
-  name = "ebs_access_policy"
+  name = "${var.resource_name}-ebs_access_policy"
   path = "/"
   description = "ebs accesss policy for k8s CSI"
   policy = <<EOF
@@ -181,6 +181,6 @@ resource "aws_iam_role_policy_attachment" "ebs_role_policy_attachment" {
 }
 
 resource "aws_iam_instance_profile" "ebs_instance_profile" {
-  name = "ebs_instance_profile"
+  name = "${var.resource_name}-ebs_instance_profile"
   role = aws_iam_role.ebs_role.name
 }
