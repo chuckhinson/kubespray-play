@@ -50,8 +50,14 @@ variable "worker_instance_count" {
   description = "The number of worker nodes"  
 }
 
-variable "ebs_instance_profile_name" {
+variable "controller_instance_profile_name" {
   nullable = false
   type = string
-  description = "The name of the instance profile to be assigned to nodes"
+  description = "The name of the instance profile to be assigned to controller nodes"
+}
+
+variable "worker_instance_profile_name" {
+  nullable = false
+  type = string
+  description = "The name of the instance profile to be assigned to worker nodes"
 }

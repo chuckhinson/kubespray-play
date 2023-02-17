@@ -86,7 +86,7 @@ resource "aws_instance" "controllers" {
     device_name = "/dev/sda1"
     volume_size = "50"
   }
-  iam_instance_profile = var.ebs_instance_profile_name
+  iam_instance_profile = var.controller_instance_profile_name
   instance_type = "t3.medium"
   key_name = var.instance_keypair_name
   private_ip =  cidrhost(var.private_subnet_cidr_block,10+count.index)
@@ -108,7 +108,7 @@ resource "aws_instance" "workers" {
     device_name = "/dev/sda1"
     volume_size = "50"
   }
-  iam_instance_profile = var.ebs_instance_profile_name
+  iam_instance_profile = var.worker_instance_profile_name
   instance_type = "t3.medium"
   key_name = var.instance_keypair_name
   private_ip =  cidrhost(var.private_subnet_cidr_block,20+count.index)

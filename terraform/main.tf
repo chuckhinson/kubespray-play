@@ -179,7 +179,8 @@ module "cluster" {
   cluster_cidr_block = var.cluster_cidr_block
   controller_instance_count = var.controller_instance_count
   worker_instance_count = var.worker_instance_count
-  ebs_instance_profile_name = module.iam.ebs_instance_profile_name
+  controller_instance_profile_name = module.iam.controller_instance_profile_name
+  worker_instance_profile_name = module.iam.worker_instance_profile_name
 
 }
 
