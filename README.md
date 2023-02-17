@@ -31,3 +31,24 @@
     - `kubectl apply -f dashboard-user.yaml`
     - `kubectl -n kubernetes-dashboard create token admin-user`
   - goto https://$DASHBOARD_HOST_FQDN/ and login using token created above
+
+## Testing Persistent Storage
+  - `kubectl apply -f pvclaim.yml`
+  - `kubectl apply -f pvtestpod.yml`
+  - `kubectl get pvc`
+  - `kubectl get pv`
+  - observe persistent volume and pvc bound to pv
+  - wait 15 - 20 seconds
+  - `kubectl exec app -- cat /data/out.txt`
+  - observe timesteamps in output
+  - `kubectl delete pod app`
+  - wait a minute or two and spin up new pod
+  - `kubectl apply -f pvtestpod.yml`
+  - wait 15 - 20 seconds
+  - `kubectl exec app -- cat /data/out.txt`
+  - observe timestamps and note gap when pod was deleted and then restarted
+  - `kubectl delete pod app`
+  - `kubectl delete pvc ebs-claim`
+  - `kubectl get pvc`
+  - `kubectl get pv`
+  - observe no persistent volumes allocated

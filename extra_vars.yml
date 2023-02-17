@@ -3,3 +3,5 @@ kubeconfig_localhost : True
 dashboard_enabled : True
 dashboard_namespace : "kubernetes-dashboard"
 ingress_nginx_enabled : True
+aws_ebs_csi_enabled : True
+persistent_volumes_enabled : True
